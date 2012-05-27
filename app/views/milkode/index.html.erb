@@ -1,1 +1,9 @@
-<h2>MilkodeController#index</h2>
+<h2>Milkode</h2>
+
+<%= form_tag :action => 'search', :project_id => @project do %>
+  <%= text_field_tag :keyword, @keyword, {:autofocus=>true, :style=>'width: 300px'} %>
+<% end %>
+<br>
+Package num: <%= @package_num %>
+
+
