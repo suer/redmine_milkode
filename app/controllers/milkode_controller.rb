@@ -4,6 +4,8 @@ require 'milkode/findgrep/findgrep'
 class MilkodeController < ApplicationController
   unloadable
 
+  before_filter :find_project
+
   def index
     @package_num = Database.instance.yaml_package_num
   end
@@ -15,4 +17,10 @@ class MilkodeController < ApplicationController
     findGrep = FindGrep::FindGrep.new(@keyword, option)
     @records = findGrep.pickupRecords
   end
+
+  def find_project
+    @project = Project.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render_404
+  end 
 end

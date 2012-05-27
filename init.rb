@@ -6,6 +6,8 @@ Redmine::Plugin.register :redmine_milkode do
   url 'https://github.com/mallowlabs/redmine_milkode'
   author_url 'https://github.com/mallowlabs/'
 
-  permission :milkode, {:milkode => [:index]}, :public => true
-  menu :project_menu, :milkode, { :controller => 'milkode', :action => 'index' }, :caption => :milkode, :last => true, :param => :project_id
+  project_module :milkode do
+    permission :milkode, {:milkode => [:index]}, :public => true
+    menu :project_menu, :milkode, { :controller => 'milkode', :action => 'index' }, :caption => :milkode#, :param => :project_id
+  end
 end
