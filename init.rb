@@ -1,4 +1,4 @@
-Redmine::Plugin.register :milkode do
+Redmine::Plugin.register :redmine_milkode do
   name 'Milkode plugin'
   author 'mallowlabs'
   description 'This is a milkode plugin for Redmine'
