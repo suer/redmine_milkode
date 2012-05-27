@@ -1,10 +1,13 @@
 <h2>Milkode#Search</h2>
 
 keyword: <%= @keyword %><br/>
-result: <%= @records.size %><br/>
+result: <%= @results.size %><br/>
 
 <hr/>
 results:<br/>
-<% @records.each do |record| %>
-  <%= record[:shortpath] %><br/>
+
+<% @results.each do |result| %>
+  <%= result[:repository_identifier] %>:
+  <%= link_to(File.basename(result[:path]),
+    :controller => 'repositories', :action => 'entry', :id => @project, :repository_id => result[:repository_identifier], :path => result[:path]) %><br/>
 <% end %>
