@@ -8,18 +8,18 @@ class MilkodeController < ApplicationController
 
   def index
     @package_num = Database.instance.yaml_package_num
-  end
 
-  def search
     @keyword = params[:keyword]
-    option = FindGrep::FindGrep::DEFAULT_OPTION.dup
-    option.dbFile = Dbdir.groonga_path(Dbdir.default_dir) 
-    @name_map = repository_package_map
-    option.packages = @name_map.keys
-    findGrep = FindGrep::FindGrep.new(@keyword, option)
-    @results = []
-    findGrep.pickupRecords.each do |record|
-      @results << search_result(record)
+    unless @keyword.blank?
+      option = FindGrep::FindGrep::DEFAULT_OPTION.dup
+      option.dbFile = Dbdir.groonga_path(Dbdir.default_dir) 
+      @name_map = repository_package_map
+      option.packages = @name_map.keys
+      findGrep = FindGrep::FindGrep.new(@keyword, option)
+      @results = []
+      findGrep.pickupRecords.each do |record|
+        @results << search_result(record)
+      end
     end
   end
 
