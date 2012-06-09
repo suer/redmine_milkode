@@ -12,24 +12,24 @@
     <th><%= l(:button_update) %></th>
     <th><%= l(:button_delete) %></th>
   </tr>
-  <% @project.repositories.each do |repository| %>
+  <% @repository_and_existences.each do |repository| %>
     <tr style="text-align:center">
-      <td><%= repository.scm_name %></td>
-      <td><%= repository.identifier || '' %></td>
-      <td style="text-align:left"><%= repository.url %></td>
+      <td><%= repository[:repository].scm_name %></td>
+      <td><%= repository[:repository].identifier || '' %></td>
+      <td style="text-align:left"><%= repository[:repository].url %></td>
       <td style="width:100px">
-        <%= form_tag :action => :add_repository, :identifier => repository.identifier do |f| %>
-          <%= button_tag l(:button_add) %>
+        <%= form_tag :action => :add_repository, :identifier => repository[:repository].identifier do |f| %>
+          <%= button_tag l(:button_add), :disabled => repository[:package_exists] %>
         <% end %>
       </td>
       <td style="width:100px">
-        <%= form_tag :action => :update_repository, :identifier => repository.identifier do |f| %>
-          <%= button_tag l(:button_update) %>
+        <%= form_tag :action => :update_repository, :identifier => repository[:repository].identifier do |f| %>
+          <%= button_tag l(:button_update), :disabled => !repository[:package_exists] %>
         <% end %>
       </td>
       <td style="width:100px">
-        <%= form_tag :action => :delete_repository, :identifier => repository.identifier do |f| %>
-          <%= button_tag l(:button_delete) %>
+        <%= form_tag :action => :delete_repository, :identifier => repository[:repository].identifier do |f| %>
+          <%= button_tag l(:button_delete), :disabled=> !repository[:package_exists]  %>
         <% end %>
       </td>
     </tr>

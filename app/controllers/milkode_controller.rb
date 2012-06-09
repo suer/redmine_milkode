@@ -40,6 +40,9 @@ class MilkodeController < ApplicationController
   end
 
   def settings
+    @repository_and_existences = @project.repositories.map do |repository|
+      {:repository => repository, :package_exists => package_exists(@project.identifier, repository.identifier)}
+    end
   end
 
   def add_repository

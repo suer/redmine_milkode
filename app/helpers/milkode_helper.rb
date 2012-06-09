@@ -27,6 +27,10 @@ module MilkodeHelper
     FileUtils.rm_r([repository_path(project_id, identifier)])
   end
 
+  def package_exists(project_id, identifier)
+    File.exist?(repository_path(project_id, identifier))
+  end
+
   def tmp_milkode_db_path
     path = File.join(tmp_milkode_path, 'db')
     unless File.exist?(path)
@@ -61,7 +65,7 @@ module MilkodeHelper
   end
 
   def repository_path(project_id, identifier)
-    create_unless_exist(File.join(tmp_milkode_repositories_path, make_package_name(project_id, identifier)))
+    File.join(tmp_milkode_repositories_path, make_package_name(project_id, identifier))
   end
 
   def make_package_name(project_id, identifier)
