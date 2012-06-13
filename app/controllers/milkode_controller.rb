@@ -10,14 +10,24 @@ class MilkodeController < ApplicationController
     @package_num = Database.instance.yaml_package_num
 
     @keyword = params[:keyword]
+    @page = (params[:page] || 1).to_i
+    @per_page = (params[:per_page] || 25).to_i
+
     unless @keyword.blank?
       option = FindGrep::FindGrep::DEFAULT_OPTION.dup
-      option.dbFile = Dbdir.groonga_path(Dbdir.default_dir) 
+      option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
       @name_map = repository_package_map
       option.packages = @name_map.keys
       findGrep = FindGrep::FindGrep.new(@keyword, option)
+      records = findGrep.pickupRecords
+
+      @total = records.size
+      @start_index = (@page - 1) * @per_page
+      @end_index = [@total, @page * @per_page].min
+      @end_index -= 1 unless @end_index == 0
+
       @results = []
-      findGrep.pickupRecords.each do |record|
+      records[@start_index..@end_index].each do |record|
         @results << search_result(record)
       end
     end
@@ -28,7 +38,7 @@ class MilkodeController < ApplicationController
     @project = Project.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render_404
-  end 
+  end
 
   def repository_package_map
     @project.repositories.inject({}) do |h, repository|
