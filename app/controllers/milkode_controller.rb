@@ -12,8 +12,6 @@ class MilkodeController < ApplicationController
   NTH = 3
 
   def index
-    @package_num = Database.instance.yaml_package_num
-
     @keyword = params[:keyword]
     @page = (params[:page] || 1).to_i
     @per_page = (params[:per_page] || 10).to_i
@@ -26,15 +24,17 @@ class MilkodeController < ApplicationController
       findGrep = FindGrep::FindGrep.new(@keyword.split, option)
       records = findGrep.pickupRecords
 
-      @total = records.size
+      @results = []
+      records.each do |record|
+        result = search_result(record, @keyword.split)
+        @results << result if result
+      end
+
+      @total = @results.size
       @start_index = (@page - 1) * @per_page
       @end_index = [@total, @page * @per_page].min
+      @results = @results[@start_index .. @end_index]
       @end_index -= 1 unless @end_index == 0
-
-      @results = []
-      records[@start_index..@end_index].each do |record|
-        @results << search_result(record, @keyword.split)
-      end
     end
   end
 
@@ -61,20 +61,22 @@ class MilkodeController < ApplicationController
     File.basename(url)
   end
 
+  MatchLine = Struct.new(:index)
   def search_result(record, patterns)
-    match_lines = Grep.new(record.content).match_lines_and(patterns)
-    content = "<pre>" + record.content + "</pre>"
-    if match_lines.size > 0
-      start_index = match_lines[0].index - NTH
-      end_index = match_lines[0].index + NTH
-      coderay = CodeRayWrapper.new(record.content, record.shortpath, match_lines)
-      coderay.set_range(start_index..end_index)
-      content = coderay.to_html
-    end
+    match_indice = Grep.new(record.content).one_match_and(patterns)
+    return nil unless match_indice
+
+    match_line = MatchLine.new
+    match_line.index = match_indice[0]
+
+    start_index = match_indice[0] - NTH
+    end_index = match_indice[0] + NTH
+    coderay = CodeRayWrapper.new(record.content, record.shortpath, [match_line])
+    coderay.set_range(start_index..end_index)
     {
       :repository_identifier => repository_identifier(record[:shortpath]),
       :path => filepath(record[:shortpath]),
-      :content => content
+      :content => coderay.to_html
     }
   end
 
