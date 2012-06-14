@@ -18,7 +18,7 @@ class MilkodeController < ApplicationController
       option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
       @name_map = repository_package_map
       option.packages = @name_map.keys
-      findGrep = FindGrep::FindGrep.new(@keyword, option)
+      findGrep = FindGrep::FindGrep.new(@keyword.split, option)
       records = findGrep.pickupRecords
 
       @total = records.size
