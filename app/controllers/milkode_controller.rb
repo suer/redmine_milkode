@@ -38,6 +38,9 @@ class MilkodeController < ApplicationController
     end
   end
 
+  def settings
+  end
+
   private
   def find_project
     @project = Project.find(params[:id])

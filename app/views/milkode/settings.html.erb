@@ -1,0 +1,38 @@
+<div class="contextual">
+  <%= link_to 'Back to Search', :action => :index %>
+</div>
+<h2>Settings</h2>
+
+<table class="list">
+  <tr>
+    <th>SCM</th>
+    <th>Identifier</th>
+    <th>Url</th>
+    <th>Add</th>
+    <th>Update</th>
+    <th>Delete</th>
+  </tr>
+  <% @project.repositories.each do |repository| %>
+    <tr style="text-align:center">
+      <td><%= repository.scm_name %></td>
+      <td><%= repository.identifier || '' %></td>
+      <td style="text-align:left"><%= repository.url %></td>
+      <td style="width:100px">
+        <%= form_tag :action => :add_repository, :identifier => repository.identifier do |f| %>
+          <%= button_tag 'Add' %>
+        <% end %>
+      </td>
+      <td style="width:100px">
+        <%= form_tag :action => :update_repository, :identifier => repository.identifier do |f| %>
+          <%= button_tag 'Update' %>
+        <% end %>
+      </td>
+      <td style="width:100px">
+        <%= form_tag :action => :delete_repository, :identifier => repository.identifier do |f| %>
+          <%= button_tag 'Delete' %>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+

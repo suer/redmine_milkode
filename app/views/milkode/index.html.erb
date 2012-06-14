@@ -36,6 +36,9 @@ table.CodeRay {
   width: 100%;
 }
 </style>
+<div class="contextual">
+  <%= link_to 'Settings', :action => :settings %>
+</div>
 <h2>Milkode</h2>
 
 <%= form_tag({:action => 'index'}, {:method => 'get', :project_id => @project})  do %>
