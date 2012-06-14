@@ -1,3 +1,41 @@
+<%= stylesheet_link_tag 'scm' %>
+<style type="text/css">
+.highlight-line {
+  background-color: #FFD;
+}
+td.code {
+  background-color: #fafafa;
+}
+.CodeRay .line-numbers {
+  background-color: #eee;
+  color: #555;
+  text-align: right;
+  border-right: 1px solid #D7D7D7;
+}
+.result {
+  margin-bottom: 15px;
+}
+table.CodeRay {
+  width: auto;
+}
+table.CodeRay {
+  border-collapse: collapse;
+  padding: 2px;
+  width: 100%;
+}
+.CodeRay {
+  background-color: #F2F2F2;
+  border: 1px solid silver;
+  color: black;
+}
+.CodeRay pre {
+  margin: 0;
+  font-size: 13px !important;
+}
+.CodeRay .code {
+  width: 100%;
+}
+</style>
 <h2>Milkode</h2>
 
 <%= form_tag({:action => 'index'}, {:method => 'get', :project_id => @project})  do %>
@@ -8,12 +46,18 @@ Package num: <%= @package_num %>
 
 <% if @results %>
   <hr/>
-  results:<br/>
 
   <% @results.each do |result| %>
-    <%= result[:repository_identifier] %>:
-    <%= link_to(File.basename(result[:path]),
-      :controller => 'repositories', :action => 'entry', :id => @project, :repository_id => result[:repository_identifier], :path => result[:path]) %><br/>
+    <div class="result syntaxhl">
+      <%= result[:repository_identifier] %>:
+      <%= link_to(File.basename(result[:path]),
+        :controller => 'repositories',
+        :action => 'entry',
+        :id => @project,
+        :repository_id => result[:repository_identifier],
+        :path => result[:path]) %><br/>
+      <%= result[:content].html_safe %>
+    </div>
   <% end %>
 
   <p class="pagination">

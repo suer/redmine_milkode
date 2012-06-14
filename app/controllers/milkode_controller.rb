@@ -1,17 +1,22 @@
+require 'coderay/encoders/html'
 require 'milkode/cdweb/lib/database'
 require 'milkode/findgrep/findgrep'
+require 'milkode/cdweb/lib/grep'
+require 'milkode/cdweb/lib/coderay_wrapper'
 
 class MilkodeController < ApplicationController
   unloadable
 
   before_filter :find_project
 
+  NTH = 3
+
   def index
     @package_num = Database.instance.yaml_package_num
 
     @keyword = params[:keyword]
     @page = (params[:page] || 1).to_i
-    @per_page = (params[:per_page] || 25).to_i
+    @per_page = (params[:per_page] || 10).to_i
 
     unless @keyword.blank?
       option = FindGrep::FindGrep::DEFAULT_OPTION.dup
@@ -28,7 +33,7 @@ class MilkodeController < ApplicationController
 
       @results = []
       records[@start_index..@end_index].each do |record|
-        @results << search_result(record)
+        @results << search_result(record, @keyword.split)
       end
     end
   end
@@ -53,10 +58,20 @@ class MilkodeController < ApplicationController
     File.basename(url)
   end
 
-  def search_result(record)
+  def search_result(record, patterns)
+    match_lines = Grep.new(record.content).match_lines_and(patterns)
+    content = "<pre>" + record.content + "</pre>"
+    if match_lines.size > 0
+      start_index = match_lines[0].index - NTH
+      end_index = match_lines[0].index + NTH
+      coderay = CodeRayWrapper.new(record.content, record.shortpath, match_lines)
+      coderay.set_range(start_index..end_index)
+      content = coderay.to_html
+    end
     {
       :repository_identifier => repository_identifier(record[:shortpath]),
-      :path => filepath(record[:shortpath])
+      :path => filepath(record[:shortpath]),
+      :content => content
     }
   end
 
