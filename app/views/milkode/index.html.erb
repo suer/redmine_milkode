@@ -30,7 +30,6 @@ table.CodeRay {
 }
 .CodeRay pre {
   margin: 0;
-  font-size: 13px !important;
 }
 .CodeRay .code {
   width: 100%;
@@ -52,7 +51,7 @@ table.CodeRay {
   <% @results.each do |result| %>
     <div class="result syntaxhl">
       <%= result[:repository_identifier] %>:
-      <%= link_to(File.basename(result[:path]),
+      <%= link_to(result[:path],
         :controller => 'repositories',
         :action => 'entry',
         :id => @project,

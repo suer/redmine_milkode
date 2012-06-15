@@ -1,5 +1,4 @@
 require 'coderay/encoders/html'
-require 'milkode/cdweb/lib/database'
 require 'milkode/findgrep/findgrep'
 require 'milkode/cdweb/lib/grep'
 require 'milkode/cdweb/lib/coderay_wrapper'
@@ -19,8 +18,10 @@ class MilkodeController < ApplicationController
     unless @keyword.blank?
       option = FindGrep::FindGrep::DEFAULT_OPTION.dup
       option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
+
       @name_map = repository_package_map
       option.packages = @name_map.keys
+
       findGrep = FindGrep::FindGrep.new(@keyword.split, option)
       records = findGrep.pickupRecords
 
@@ -61,17 +62,13 @@ class MilkodeController < ApplicationController
     File.basename(url)
   end
 
-  MatchLine = Struct.new(:index)
   def search_result(record, patterns)
-    match_indice = Grep.new(record.content).one_match_and(patterns)
-    return nil unless match_indice
+    match_lines = Grep.new(record.content).match_lines_and(patterns)
+    return nil if match_lines.size == 0
 
-    match_line = MatchLine.new
-    match_line.index = match_indice[0]
-
-    start_index = match_indice[0] - NTH
-    end_index = match_indice[0] + NTH
-    coderay = CodeRayWrapper.new(record.content, record.shortpath, [match_line])
+    start_index = match_lines[0].index - NTH
+    end_index = match_lines[0].index + NTH
+    coderay = CodeRayWrapper.new(record.content, record.shortpath, match_lines)
     coderay.set_range(start_index..end_index)
     {
       :repository_identifier => repository_identifier(record[:shortpath]),
