@@ -4,6 +4,7 @@ require 'milkode/cdweb/lib/grep'
 require 'milkode/cdweb/lib/coderay_wrapper'
 
 class MilkodeController < ApplicationController
+  include MilkodeHelper
   unloadable
 
   before_filter :find_project
@@ -17,10 +18,9 @@ class MilkodeController < ApplicationController
 
     unless @keyword.blank?
       option = FindGrep::FindGrep::DEFAULT_OPTION.dup
-      option.dbFile = Dbdir.groonga_path(Dbdir.default_dir)
+      option.dbFile = Dbdir.groonga_path(db_dir)
 
-      @name_map = repository_package_map
-      option.packages = @name_map.keys
+      option.packages = packages(@project)
 
       findGrep = FindGrep::FindGrep.new(@keyword.split, option)
       records = findGrep.pickupRecords
@@ -42,18 +42,41 @@ class MilkodeController < ApplicationController
   def settings
   end
 
+  def add_repository
+    project_id = @project.identifier
+    identifier = params[:identifier]
+
+    repository = @project.repositories.find { |r| r.identifier == identifier }
+    
+    add_package(project_id, identifier, repository.url, repository.scm_name)
+    redirect_to :action => :settings
+  end
+
+  def update_repository
+    project_id = @project.identifier
+    identifier = params[:identifier]
+
+    repository = @project.repositories.find { |r| r.identifier == identifier }
+    
+    update_package(project_id, identifier, repository.url, repository.scm_name)
+    redirect_to :action => :settings
+  end
+
+  def delete_repository
+    project_id = @project.identifier
+    identifier = params[:identifier]
+
+    repository = @project.repositories.find { |r| r.identifier == identifier }
+    
+    delete_package(project_id, identifier, repository.url, repository.scm_name)
+    redirect_to :action => :settings
+  end
+
   private
   def find_project
     @project = Project.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render_404
-  end
-
-  def repository_package_map
-    @project.repositories.inject({}) do |h, repository|
-      h[package_name(repository)] = repository.identifier
-      h
-    end
   end
 
   def package_name(repository)
@@ -78,7 +101,7 @@ class MilkodeController < ApplicationController
   end
 
   def repository_identifier(path)
-    @name_map[path.split(File::SEPARATOR).first]
+    path.split(File::SEPARATOR).first.split('@').first
   end
 
   def filepath(path)
