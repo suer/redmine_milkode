@@ -49,6 +49,8 @@ class MilkodeController < ApplicationController
     repository = @project.repositories.find { |r| r.identifier == identifier }
     
     add_package(project_id, identifier, repository.url, repository.scm_name)
+
+    flash[:notice] = l(:notice_successful_create)
     redirect_to :action => :settings
   end
 
@@ -59,6 +61,8 @@ class MilkodeController < ApplicationController
     repository = @project.repositories.find { |r| r.identifier == identifier }
     
     update_package(project_id, identifier, repository.url, repository.scm_name)
+
+    flash[:notice] = l(:notice_successful_update)
     redirect_to :action => :settings
   end
 
@@ -69,6 +73,8 @@ class MilkodeController < ApplicationController
     repository = @project.repositories.find { |r| r.identifier == identifier }
     
     delete_package(project_id, identifier, repository.url, repository.scm_name)
+
+    flash[:notice] = l(:notice_successful_delete)
     redirect_to :action => :settings
   end
 

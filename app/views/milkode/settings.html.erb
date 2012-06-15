@@ -5,12 +5,12 @@
 
 <table class="list">
   <tr>
-    <th>SCM</th>
-    <th>Identifier</th>
-    <th>Url</th>
-    <th>Add</th>
-    <th>Update</th>
-    <th>Delete</th>
+    <th><%= l(:label_scm) %></th>
+    <th><%= l(:field_identifier) %></th>
+    <th><%= l(:field_url) %></th>
+    <th><%= l(:button_add) %></th>
+    <th><%= l(:button_update) %></th>
+    <th><%= l(:button_delete) %></th>
   </tr>
   <% @project.repositories.each do |repository| %>
     <tr style="text-align:center">
@@ -19,17 +19,17 @@
       <td style="text-align:left"><%= repository.url %></td>
       <td style="width:100px">
         <%= form_tag :action => :add_repository, :identifier => repository.identifier do |f| %>
-          <%= button_tag 'Add' %>
+          <%= button_tag l(:button_add) %>
         <% end %>
       </td>
       <td style="width:100px">
         <%= form_tag :action => :update_repository, :identifier => repository.identifier do |f| %>
-          <%= button_tag 'Update' %>
+          <%= button_tag l(:button_update) %>
         <% end %>
       </td>
       <td style="width:100px">
         <%= form_tag :action => :delete_repository, :identifier => repository.identifier do |f| %>
-          <%= button_tag 'Delete' %>
+          <%= button_tag l(:button_delete) %>
         <% end %>
       </td>
     </tr>

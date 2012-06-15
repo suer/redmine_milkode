@@ -61,14 +61,19 @@ table.CodeRay {
     </div>
   <% end %>
 
-  <p class="pagination">
-  <% if @page > 1 %>
-    <%= link_to '«', :page => @page - 1, :keyword => @keyword, :per_page => @per_page %>
+  <% if @results.size == 0 %>
+    <p class="nodata"><%= l(:label_no_data) %></p>
+  <% else %>
+    <p class="pagination">
+    <% if @page > 1 %>
+      <%= link_to '«', :page => @page - 1, :keyword => @keyword, :per_page => @per_page %>
+    <% end %>
+    <% if @page * @per_page < @total %>
+      <%= link_to '»', :page => @page + 1, :keyword => @keyword, :per_page => @per_page %>
+    <% end %>
+      (<%= @start_index + 1 %>-<%= @end_index + 1 %>/<%= @total %>)
+    </p>
   <% end %>
-  <% if @page * @per_page < @total %>
-    <%= link_to '»', :page => @page + 1, :keyword => @keyword, :per_page => @per_page %>
-  <% end %>
-    (<%= @start_index + 1 %>-<%= @end_index + 1 %>/<%= @total %>)
-  </p>
 
 <% end %>
+
