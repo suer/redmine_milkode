@@ -49,6 +49,11 @@ module MilkodeHelper
     end
   end
 
+  def identifier_from_package_name(package_name)
+    return '' unless package_name.index('@')
+    package_name.split('@').first
+  end
+
   private
   # milk init
   def init_db(db_path)

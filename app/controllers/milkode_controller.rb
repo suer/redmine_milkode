@@ -101,7 +101,7 @@ class MilkodeController < ApplicationController
   end
 
   def repository_identifier(path)
-    path.split(File::SEPARATOR).first.split('@').first
+    identifier_from_package_name(path.split(File::SEPARATOR).first)
   end
 
   def filepath(path)
