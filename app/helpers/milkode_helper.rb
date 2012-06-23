@@ -101,6 +101,10 @@ module MilkodeHelper
       svn_bin = Redmine::Scm::Adapters::SubversionAdapter::client_command
       cmd = "#{svn_bin} export #{url} #{repository_dir}"
       cmd << "@" if repository_dir =~ /@/
+    elsif scm == Repository::Mercurial.scm_name
+      hg_bin = Redmine::Scm::Adapters::MercurialAdapter::client_command
+      cmd = "#{hg_bin} archive -R #{url} #{repository_dir}"
+      puts cmd
     end
     cmd
   end
