@@ -3,18 +3,21 @@ require 'open3'
 
 module MilkodeHelper
   def add_package(project_id, identifier, url, scm)
-    # clone to repositories dir
-    if scm == 'Git'
-      git_bin = Redmine::Scm::Adapters::GitAdapter::GIT_BIN
-      git_dir = repository_path(project_id, identifier)
-      cmd = "#{git_bin} clone #{url} #{git_dir}"
+    # specify clone directory
+    repository_dir = repository_path(project_id, identifier)
+
+    # clone command
+    cmd = clone_command(repository_dir, url, scm)
+
+    # clone repositories into tmporary dir
+    if cmd
       Open3.popen3(cmd) do |stdin,stdout,stderr|
         puts stdout.gets
         puts stderr.gets
       end
 
       # add to milkode
-      Milkode::Cdstk.new($stdout, db_dir).add([git_dir], {})
+      Milkode::Cdstk.new($stdout, db_dir).add([repository_dir], {})
     end
   end
 
@@ -57,11 +60,6 @@ module MilkodeHelper
     end
   end
 
-  def identifier_from_package_name(package_name)
-    return '' unless package_name.index('@')
-    package_name.split('@').first
-  end
-
   private
   # milk init
   def init_db(db_path)
@@ -92,5 +90,18 @@ module MilkodeHelper
   def create_unless_exist(path)
     FileUtils.mkdir_p(path) unless File.exist?(path)    
     path
+  end
+
+  def clone_command(repository_dir, url, scm)
+    cmd = nil
+    if scm == Repository::Git.scm_name
+      git_bin = Redmine::Scm::Adapters::GitAdapter::client_command
+      cmd = "#{git_bin} clone #{url} #{repository_dir}"
+    elsif scm == Repository::Subversion.scm_name
+      svn_bin = Redmine::Scm::Adapters::SubversionAdapter::client_command
+      cmd = "#{svn_bin} export #{url} #{repository_dir}"
+      cmd << "@" if repository_dir =~ /@/
+    end
+    cmd
   end
 end

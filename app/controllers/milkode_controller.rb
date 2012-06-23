@@ -103,17 +103,17 @@ class MilkodeController < ApplicationController
     coderay = CodeRayWrapper.new(record.content, record.restpath, match_lines)
     coderay.set_range(start_index..end_index)
     {
-      :repository_identifier => repository_identifier(record[:restpath]),
+      :repository_identifier => repository_identifier(record[:package]),
       :path => filepath(record[:restpath]),
       :content => coderay.to_html
     }
   end
 
-  def repository_identifier(path)
-    identifier_from_package_name(path.split(File::SEPARATOR).first)
+  def repository_identifier(package_name)
+    package_name.split('@').first
   end
 
   def filepath(path)
-    path.split(File::SEPARATOR)[1..-1].join('/')
+    path.split(File::SEPARATOR)[0..-1].join('/')
   end
 end
