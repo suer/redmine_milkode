@@ -23,7 +23,7 @@ Upgrade from 0.0.1
 
     $ bundle update
     $ cd $RAILS_ROOT/tmp/milkode/db
-    $ bundle exec milkode rebuild --all
+    $ bundle exec milk rebuild --all
 
 Requirements
 ------------------------------
