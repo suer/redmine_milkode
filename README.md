@@ -18,6 +18,13 @@ Type below commands:
 
 Then, restart your redmine.
 
+Upgrade from 0.0.1
+-----------------------------
+
+    $ bundle update
+    $ cd $RAILS_ROOT/tmp/milkode/db
+    $ bundle exec milkode rebuild --all
+
 Requirements
 ------------------------------
 * Redmine 2.0 or later
