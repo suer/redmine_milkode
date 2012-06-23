@@ -1,4 +1,5 @@
 require 'milkode/cdstk/cdstk'
+require 'open3'
 
 module MilkodeHelper
   def add_package(project_id, identifier, url, scm)
@@ -7,7 +8,10 @@ module MilkodeHelper
       git_bin = Redmine::Scm::Adapters::GitAdapter::GIT_BIN
       git_dir = repository_path(project_id, identifier)
       cmd = "#{git_bin} clone #{url} #{git_dir}"
-      IO.popen(cmd, 'r+') { |io| puts io.gets }
+      Open3.popen3(cmd) do |stdin,stdout,stderr|
+        puts stdout.gets
+        puts stderr.gets
+      end
 
       # add to milkode
       Milkode::Cdstk.new($stdout, db_dir).add([git_dir], {})

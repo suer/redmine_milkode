@@ -1,4 +1,4 @@
 source :rubygems
 
-gem "milkode", "0.6.3"
+gem "milkode", "0.8.1"
 

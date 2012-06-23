@@ -100,11 +100,11 @@ class MilkodeController < ApplicationController
 
     start_index = match_lines[0].index - NTH
     end_index = match_lines[0].index + NTH
-    coderay = CodeRayWrapper.new(record.content, record.shortpath, match_lines)
+    coderay = CodeRayWrapper.new(record.content, record.restpath, match_lines)
     coderay.set_range(start_index..end_index)
     {
-      :repository_identifier => repository_identifier(record[:shortpath]),
-      :path => filepath(record[:shortpath]),
+      :repository_identifier => repository_identifier(record[:restpath]),
+      :path => filepath(record[:restpath]),
       :content => coderay.to_html
     }
   end
