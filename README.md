@@ -1,5 +1,8 @@
 Redmine Milkode plugin
 ====================================
+
+[![Code Climate](https://codeclimate.com/github/suer/redmine_milkode.png)](https://codeclimate.com/github/suer/redmine_milkode)
+
 A Redmine plugin adds fast code search with [Milkode](http://milkode.ongaeshi.me/wiki/Main_Page).
 
 Author
